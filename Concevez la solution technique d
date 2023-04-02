@@ -48,7 +48,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Client`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`Client`;
 CREATE TABLE IF NOT EXISTS `mydb`.`Client` (
   `User_idUser` INT NOT NULL,
   `Client_Address_idAddress` INT NOT NULL,
@@ -71,7 +70,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`PointOfSale`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`PointOfSale`;
 CREATE TABLE IF NOT EXISTS `mydb`.`PointOfSale` (
   `idPointOfSale` INT NOT NULL,
   `namePointOfSale` VARCHAR(200) NULL,
@@ -97,11 +95,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Employee`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`Employee`;
 CREATE TABLE IF NOT EXISTS `mydb`.`Employee` (
   `User_idUser` INT NOT NULL,
   `role` ENUM('Manager', 'Pizzaiolo', 'Delivery Man') NULL,
-  `PointOfSale_idPointOfSale` INT NULL,
+  `PointOfSale_idPointOfSale` INT NOT NULL,
   PRIMARY KEY (`User_idUser`),
   INDEX `fk_Employee_User1_idx` (`User_idUser` ASC) VISIBLE,
   INDEX `fk_Employee_PointOfSale1_idx` (`PointOfSale_idPointOfSale` ASC) VISIBLE,
@@ -121,7 +118,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Order`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`Order`;
 CREATE TABLE IF NOT EXISTS `mydb`.`Order` (
   `idOrder` INT NOT NULL AUTO_INCREMENT,
   `dateOrder` DATETIME NOT NULL DEFAULT '2022-01-01 00:00:00',
@@ -158,7 +154,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Product`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`Product`;
 CREATE TABLE IF NOT EXISTS `mydb`.`Product` (
   `idProduct` INT NOT NULL,
   `nameProduct` VARCHAR(200) NULL,
@@ -175,7 +170,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Ingredient`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`Ingredient`;
 CREATE TABLE IF NOT EXISTS `mydb`.`Ingredient` (
   `idIngredient` INT NOT NULL,
   `name` VARCHAR(200) NULL,
@@ -193,7 +187,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`Stock`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`Stock`;
 CREATE TABLE IF NOT EXISTS `mydb`.`Stock` (
   `idStock` INT NOT NULL,
   `datePurchase` DATE NULL,
@@ -212,7 +205,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`assoc_Order_Product`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`assoc_Order_Product`;
 CREATE TABLE IF NOT EXISTS `mydb`.`assoc_Order_Product` (
   `Order_idOrder` INT NOT NULL,
   `Product_idProduct` INT NOT NULL,
@@ -236,7 +228,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`assoc_Ingredient_Stock`
 -- -----------------------------------------------------
-DROP TABLE `mydb`.`assoc_Ingredient_Stock`;
 CREATE TABLE IF NOT EXISTS `mydb`.`assoc_Ingredient_Stock` (
   `Stock_idStock` INT NOT NULL,
   `Ingredient_idIngredient` INT NOT NULL,
@@ -273,67 +264,6 @@ INSERT INTO `mydb`.`User` (`idUser`, `lastName`, `firstName`, `dateCreateAccount
 (3, 'Johnson', 'Michael', '2022-01-03', '3456789012', 'mypassword', 'michael.johnson@example.com', 'mjohnson'),
 (4, 'Lee', 'Sarah', '2022-01-04', '4567890123', 'mypassword', 'sarah.lee@example.com', 'slee'),
 (5, 'Brown', 'David', '2022-01-05', '5678901234', 'mypassword', 'david.brown@example.com', 'dbrown');
-
-INSERT INTO `mydb`.`Client` (`User_idUser`, `Client_Address_idAddress`) VALUES
-(1, 1);
-
-INSERT INTO `mydb`.`Employee` (`User_idUser`, `role`, `PointOfSale_idPointOfSale`) VALUES
-(2, 'Manager', NULL),
-(3, 'Pizzaiolo', NULL),
-(4, 'Delivery Man', NULL);
-
-INSERT INTO `mydb`.`PointOfSale` (`idPointOfSale`, `namePointOfSale`, `siret`, `AddressPointOfSale_idAddress`, `Employee_Manager_idUser`) VALUES
-(1, 'Pizza Place 1', '123456789', 2, 2);
-
-
-update `mydb`.`Employee` set `PointOfSale_idPointOfSale` = 1 where `User_idUser` = 2;
-update `mydb`.`Employee` set `PointOfSale_idPointOfSale` = 1 where `User_idUser` = 3;
-update `mydb`.`Employee` set `PointOfSale_idPointOfSale` = 1 where `User_idUser` = 4; 
-
-INSERT INTO `mydb`.`Order` (`dateOrder`, `dateDelivery`, `statusOrder`, `payMethod`, `amountHT`, `amountTTC`, `Client_User_idUser`, `Employee_Pizzaiolo_User_idUser`, `Employee_DeliveryMan_User_idUser1`) 
-VALUES ('2022-03-31 15:30:00', '2022-03-31 18:45:00', 'In preparation', 'Credit Card', 25.0, 30.0, 1, 3, 4);
-
-INSERT INTO mydb.Product (idProduct, nameProduct, size, composition, category, unitPriceHT, unitPriceTTC, recipe) VALUES
-(1, 'Pizza Hawaïenne', 'Large', 'Jambon, Ananas, Fromage', 'Pizza salée', 10.00, 12.00, "1. Préchauffez le four à 220°C (thermostat 7-8) Étalez la pâte à pizza Étalez la sauce tomate sur la pâte Ajoutez le jambon   l'ananas et le fromage Enfournez pendant 12-15 minutes  Servez chaud."),
-(2, 'Pizza Chocolat-banane', 'Medium', 'Chocolat, Banane, Sucre', 'Pizza sucrée', 8.00, 10.00, '1. Préchauffez le four à 200°C (thermostat 6-7) Étalez la pâte à pizza Étalez le chocolat sur la pâte Ajoutez les rondelles de banane et saupoudrez de sucre.\n5. Enfournez pendant 10-12 minutes Servez chaud.');
-
-INSERT INTO `mydb`.`Ingredient` (idIngredient, name, Product_idProduct) VALUES
-(1, 'Jambon', 1),
-(2, 'Ananas', 1),
-(3, 'Fromage', 1),
-(4, 'Chocolat', 2),
-(5, 'Banane', 2),
-(6, 'Sucre', 2),
-(7, 'Saucisse', 1),
-(8, 'Champignons', 1),
-(9, 'Poulet', 1),
-(10, 'Poivrons', 1),
-(11, 'Oeuf', 2),
-(12, 'Noix de coco', 2),
-(13, 'Miel', 2);
-
-INSERT INTO mydb.assoc_Order_Product (Order_idOrder, Product_idProduct, quantity) VALUES (1, 1, 2),(1,2,3);
-
-INSERT INTO `mydb`.`Stock` (`idStock`, `datePurchase`, `dateExpiration`, `PointOfSale_idPointOfSale`) 
-VALUES (1, '2022-02-01', '2022-05-01', 1),
-       (2, '2022-03-15', '2022-06-15', 1);
-       
-INSERT INTO `mydb`.`assoc_Ingredient_Stock` (`Stock_idStock`, `Ingredient_idIngredient`, `quantityRemaining`, `unit`)
-VALUES (1, 1, 500, 'g'),
-       (2, 2, 100, 'g');      
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
