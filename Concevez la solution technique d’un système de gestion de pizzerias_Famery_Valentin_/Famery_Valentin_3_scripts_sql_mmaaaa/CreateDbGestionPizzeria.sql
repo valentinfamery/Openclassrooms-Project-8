@@ -178,14 +178,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`ingredient` (
   `id` INT NOT NULL,
   `name` VARCHAR(200) NULL,
-  `id_product` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_Ingredient_Product1_idx` (`id_product` ASC) VISIBLE,
-  CONSTRAINT `fk_Ingredient_Product1`
-    FOREIGN KEY (`id_product`)
-    REFERENCES `mydb`.`product` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -256,6 +249,26 @@ CREATE TABLE IF NOT EXISTS `mydb`.`assoc_ingredient_stock` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `mydb`.`assoc_product_ingredient` (
+  `id_product` INT NOT NULL,
+  `id_ingredient` INT NOT NULL,
+  `quantity_required` INT NULL,
+  `unit` VARCHAR(43) NULL,
+  INDEX `fk_assoc_product_ingredient_product_idx` (`id_product` ASC) VISIBLE,
+  INDEX `fk_assoc_product_ingredient_ingredient_idx` (`id_ingredient` ASC) VISIBLE,
+  PRIMARY KEY (`id_product`, `id_ingredient`),
+  CONSTRAINT `fk_assoc_product_ingredient_product`
+    FOREIGN KEY (`id_product`)
+    REFERENCES `mydb`.`Product` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_assoc_product_ingredient_ingredient`
+    FOREIGN KEY (`id_ingredient`)
+    REFERENCES `mydb`.`Ingredient` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -297,20 +310,29 @@ INSERT INTO mydb.product (id, name, size, composition, category, unit_price_ht, 
 (1, 'Pizza Hawaïenne', 'Large', 'Jambon, Ananas, Fromage', 'Pizza salée', 10.00, 12.00, "1. Préchauffez le four à 220°C (thermostat 7-8) Étalez la pâte à pizza Étalez la sauce tomate sur la pâte Ajoutez le jambon   l'ananas et le fromage Enfournez pendant 12-15 minutes  Servez chaud."),
 (2, 'Pizza Chocolat-banane', 'Medium', 'Chocolat, Banane, Sucre', 'Pizza sucrée', 8.00, 10.00, '1. Préchauffez le four à 200°C (thermostat 6-7) Étalez la pâte à pizza Étalez le chocolat sur la pâte Ajoutez les rondelles de banane et saupoudrez de sucre.\n5. Enfournez pendant 10-12 minutes Servez chaud.');
 
-INSERT INTO `mydb`.`ingredient` (id, name, id_product) VALUES
-(1, 'Jambon', 1),
-(2, 'Ananas', 1),
-(3, 'Fromage', 1),
-(4, 'Chocolat', 2),
-(5, 'Banane', 2),
-(6, 'Sucre', 2),
-(7, 'Saucisse', 1),
-(8, 'Champignons', 1),
-(9, 'Poulet', 1),
-(10, 'Poivrons', 1),
-(11, 'Oeuf', 2),
-(12, 'Noix de coco', 2),
-(13, 'Miel', 2);
+INSERT INTO `mydb`.`ingredient` (id, name) VALUES
+(1, 'Jambon'),
+(2, 'Ananas'),
+(3, 'Fromage'),
+(4, 'Chocolat'),
+(5, 'Banane'),
+(6, 'Sucre'),
+(7, 'Saucisse'),
+(8, 'Champignons'),
+(9, 'Poulet'),
+(10, 'Poivrons'),
+(11, 'Oeuf'),
+(12, 'Noix de coco'),
+(13, 'Miel');
+
+INSERT INTO `mydb`.`assoc_product_ingredient` (id_product,id_ingredient,quantity_required,unit)VALUES 
+(1,1,50,'g'),
+(2,1,40,'g'),
+(3,1,60,'g'),
+(4,2,56,'g'),
+(5,2,72,'g'),
+(6,2,90,'g'),
+(7,1,30,'g');
 
 INSERT INTO mydb.assoc_order_product (id_order, id_product, quantity) VALUES (1, 1, 2),(1,2,3);
 
